@@ -18,14 +18,17 @@ namespace ExpressiveValidator
 
             switch (memberInfo)
             {
-                case PropertyInfo propertyInfo:
-                    getValueFunc = obj => propertyInfo.GetValue(obj);
-                    break;
                 case FieldInfo fieldInfo:
                     getValueFunc = obj => fieldInfo.GetValue(obj);
                     break;
+                case MethodInfo methodInfo:
+                    getValueFunc = obj => methodInfo.Invoke(obj, new object[0]);
+                    break;
+                case PropertyInfo propertyInfo:
+                    getValueFunc = obj => propertyInfo.GetValue(obj);
+                    break;
                 default:
-                    throw new ArgumentException($"{memberInfo} is not a property or field!");
+                    throw new ArgumentException($"{memberInfo} is not a property, field, or method!");
             }
 
             return new ExpressiveValidatorItem(getValueFunc, validateFunc, errorProvider);

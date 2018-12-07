@@ -10,8 +10,6 @@ namespace ExpressiveValidator
 
         internal ExpressiveValidatorBuilder() { }
         
-
-
         public ExpressiveValidatorBuilder<TObject, TError> Validate(
             Func<TObject, bool> errorPredicate,
             Func<TError> errorProvider
