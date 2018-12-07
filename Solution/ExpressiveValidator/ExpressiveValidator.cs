@@ -12,15 +12,19 @@ namespace ExpressiveValidator
             _validators = validators.ToArray();
         }
 
-        public IEnumerable<TError> Validate(TObject obj)
+        public bool Validate(TObject obj, out List<TError> errors)
         {
+            errors = new List<TError>();
+
             foreach (var validator in _validators)
             {
                 if (!validator.Validate(obj, out var error))
                 {
-                    yield return (TError) error;
+                    errors.Add((TError) error);
                 }
             }
+
+            return errors.Any();
         }
     }
 }

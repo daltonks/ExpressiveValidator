@@ -7,12 +7,12 @@ namespace ExpressiveValidator
     {
         private readonly Func<object, object> _getValueFunc;
         private readonly Func<object, bool> _validateFunc;
-        private readonly object _validationError;
+        private readonly Func<object> _errorProvider;
 
-        public ExpressiveMemberValidator(Func<object, bool> validateFunc, object validationError, MemberInfo memberInfo)
+        public ExpressiveMemberValidator(Func<object, bool> validateFunc, Func<object> errorProvider, MemberInfo memberInfo)
         {
             _validateFunc = validateFunc;
-            _validationError = validationError;
+            _errorProvider = errorProvider;
 
             switch (memberInfo)
             {
@@ -32,7 +32,7 @@ namespace ExpressiveValidator
 
             error = passedValidation
                 ? null
-                : _validationError;
+                : _errorProvider.Invoke();
 
             return passedValidation;
         }

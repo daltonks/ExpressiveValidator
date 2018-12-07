@@ -11,15 +11,28 @@ namespace ExpressiveValidator
         private readonly OrderedDictionary<MemberInfo, List<ExpressiveMemberValidator>> _memberValidators 
             = new OrderedDictionary<MemberInfo, List<ExpressiveMemberValidator>>();
 
-        public ExpressiveValidatorBuilder<TObject, TError> IsNotEmpty(Expression<Func<TObject, string>> expression, TError error)
+        public ExpressiveValidatorBuilder<TObject, TError> IsNotEmpty(Expression<Func<TObject, string>> expression, Func<TError> errorProvider)
         {
-            return Validate(expression, error, string.IsNullOrWhiteSpace);
+            return Validate(expression, errorProvider, string.IsNullOrWhiteSpace);
         }
 
-        public ExpressiveValidatorBuilder<TObject, TError> Validate<TProperty>(
-            Expression<Func<TObject, TProperty>> expression, 
-            TError error,
-            Func<TProperty, bool> errorPredicate
+        public ExpressiveValidatorBuilder<TObject, TError> MinLength(
+            Expression<Func<TObject, string>> expression, 
+            Func<int, TError> errorProvider, 
+            int length
+        )
+        {
+            return Validate(
+                expression, 
+                () => errorProvider.Invoke(length), 
+                value => value != null && value.Length >= length
+            );
+        }
+
+        public ExpressiveValidatorBuilder<TObject, TError> Validate<TMember>(
+            Expression<Func<TObject, TMember>> expression, 
+            Func<TError> errorProvider,
+            Func<TMember, bool> errorPredicate
         )
         {
             var memberExpression = (MemberExpression) expression.Body;
@@ -30,7 +43,12 @@ namespace ExpressiveValidator
                 _memberValidators[memberInfo] = propertyValidators = new List<ExpressiveMemberValidator>();
             }
 
-            propertyValidators.Add(new ExpressiveMemberValidator(value => errorPredicate.Invoke((TProperty) value), error, memberInfo));
+            var memberValidator = new ExpressiveMemberValidator(
+                value => errorPredicate.Invoke((TMember) value), 
+                () => errorProvider.Invoke(), 
+                memberInfo
+            );
+            propertyValidators.Add(memberValidator);
 
             return this;
         }
