@@ -5,18 +5,30 @@ namespace ExpressiveValidator
 {
     public class ExpressiveValidator<TObject, TError>
     {
-        private readonly ExpressiveMemberValidator[] _validators;
-
-        internal ExpressiveValidator(IEnumerable<ExpressiveMemberValidator> validators)
+        public static ExpressiveValidatorBuilder<TObject, TError> Builder()
         {
-            _validators = validators.ToArray();
+            return new ExpressiveValidatorBuilder<TObject, TError>();
+        }
+
+        private readonly ExpressiveValidatorItem[] _validatorItems;
+
+        internal ExpressiveValidator(IEnumerable<ExpressiveValidatorItem> validators)
+        {
+            _validatorItems = validators.ToArray();
+        }
+
+        public bool Validate(TObject obj)
+        {
+            return _validatorItems.All(
+                validator => validator.Validate(obj, out _)
+            );
         }
 
         public bool Validate(TObject obj, out List<TError> errors)
         {
             errors = new List<TError>();
 
-            foreach (var validator in _validators)
+            foreach (var validator in _validatorItems)
             {
                 if (!validator.Validate(obj, out var error))
                 {

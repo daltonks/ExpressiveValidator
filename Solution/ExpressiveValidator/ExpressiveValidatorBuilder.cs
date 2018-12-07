@@ -1,62 +1,54 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Reflection;
 
 namespace ExpressiveValidator
 {
     public class ExpressiveValidatorBuilder<TObject, TError>
     {
-        private readonly OrderedDictionary<MemberInfo, List<ExpressiveMemberValidator>> _memberValidators 
-            = new OrderedDictionary<MemberInfo, List<ExpressiveMemberValidator>>();
+        private readonly List<ExpressiveValidatorItem> _validatorItems = new List<ExpressiveValidatorItem>();
 
-        public ExpressiveValidatorBuilder<TObject, TError> IsNotEmpty(Expression<Func<TObject, string>> expression, Func<TError> errorProvider)
-        {
-            return Validate(expression, errorProvider, string.IsNullOrWhiteSpace);
-        }
+        internal ExpressiveValidatorBuilder() { }
+        
 
-        public ExpressiveValidatorBuilder<TObject, TError> MinLength(
-            Expression<Func<TObject, string>> expression, 
-            Func<int, TError> errorProvider, 
-            int length
+
+        public ExpressiveValidatorBuilder<TObject, TError> Validate(
+            Func<TObject, bool> errorPredicate,
+            Func<TError> errorProvider
         )
         {
-            return Validate(
-                expression, 
-                () => errorProvider.Invoke(length), 
-                value => value != null && value.Length >= length
+            var validatorItem = ExpressiveValidatorItem.FromInstance(
+                value => errorPredicate.Invoke((TObject) value), 
+                () => errorProvider.Invoke()
             );
-        }
 
-        public ExpressiveValidatorBuilder<TObject, TError> Validate<TMember>(
-            Expression<Func<TObject, TMember>> expression, 
-            Func<TError> errorProvider,
-            Func<TMember, bool> errorPredicate
-        )
-        {
-            var memberExpression = (MemberExpression) expression.Body;
-            var memberInfo = memberExpression.Member;
-
-            if (!_memberValidators.TryGetValue(memberInfo, out var propertyValidators))
-            {
-                _memberValidators[memberInfo] = propertyValidators = new List<ExpressiveMemberValidator>();
-            }
-
-            var memberValidator = new ExpressiveMemberValidator(
-                value => errorPredicate.Invoke((TMember) value), 
-                () => errorProvider.Invoke(), 
-                memberInfo
-            );
-            propertyValidators.Add(memberValidator);
+            _validatorItems.Add(validatorItem);
 
             return this;
         }
 
+        public ExpressiveValidatorBuilder<TObject, TError> ValidateMember<TMember>(
+            Expression<Func<TObject, TMember>> memberExpression,
+            Func<TMember, bool> errorPredicate,
+            Func<TError> errorProvider)
+        {
+            var bodyExpression = (MemberExpression) memberExpression.Body;
+            var memberInfo = bodyExpression.Member;
+            
+            var validatorItem = ExpressiveValidatorItem.FromMember(
+                memberInfo,
+                value => errorPredicate.Invoke((TMember) value), 
+                () => errorProvider.Invoke()
+            );
+
+            _validatorItems.Add(validatorItem);
+
+            return this;
+        }
+        
         public ExpressiveValidator<TObject, TError> Build()
         {
-            var allValidators = _memberValidators.Values().SelectMany(validators => validators);
-            return new ExpressiveValidator<TObject, TError>(allValidators);
+            return new ExpressiveValidator<TObject, TError>(_validatorItems);
         }
     }
 }
