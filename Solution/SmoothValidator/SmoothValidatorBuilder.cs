@@ -13,9 +13,10 @@ namespace SmoothValidator
             _getObjectFunc = getObjectFunc;
         }
 
-        public SmoothValidatorBuilder<TObject, TError> Validate(
+        public SmoothValidatorBuilder<TObject, TError> True(
             Func<TObject, bool> predicate,
-            Func<TError> errorProvider)
+            Func<TError> errorProvider
+        )
         {
             var validatorItem = new SmoothValidatorItem(
                 obj => _getObjectFunc.Invoke(obj),

@@ -11,7 +11,7 @@ namespace SmoothValidator.Extensions
             Func<TError> errorProvider
         )
         {
-            return builder.Validate(
+            return builder.True(
                 str => !string.IsNullOrWhiteSpace(str), 
                 errorProvider
             );
@@ -36,7 +36,7 @@ namespace SmoothValidator.Extensions
             Func<int, TError> errorProvider
         )
         {
-            return builder.Validate(
+            return builder.True(
                 value => value != null && value.Length >= lengthProvider.Invoke(), 
                 () => errorProvider.Invoke(lengthProvider.Invoke())
             );
@@ -49,7 +49,7 @@ namespace SmoothValidator.Extensions
             Func<int, TError> errorProvider
         )
         {
-            return builder.Validate(
+            return builder.True(
                 value => value == null || value.Length <= lengthProvider.Invoke(), 
                 () => errorProvider.Invoke(lengthProvider.Invoke())
             );

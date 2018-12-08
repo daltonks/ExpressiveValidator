@@ -28,14 +28,14 @@ namespace SmoothValidator.Example
 
     public class CreateUserRequest
     {
-        private static readonly SmoothValidator<CreateUserRequest, string> Validator =
+        private static readonly ISmoothValidator<CreateUserRequest, string> Validator =
             SmoothValidator<CreateUserRequest, string>
                 .Builder()
                 .SubValidate(
                     request => request.Email,
                     builder => builder
                         .Length(() => new LengthRange(5, 254), range => $"Email must be between {range} characters.")
-                        .Validate(value => value?.Contains("@") ?? false, () => "Email is invalid.")
+                        .True(value => value?.Contains("@") ?? false, () => "Email is invalid.")
                 )
                 .SubValidate(
                     request => request.FirstName,

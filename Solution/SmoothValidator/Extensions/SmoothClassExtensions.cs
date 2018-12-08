@@ -10,7 +10,7 @@ namespace SmoothValidator.Extensions
             Func<TError> errorProvider
         ) where TObject : class
         {
-            return builder.Validate(
+            return builder.True(
                 value => value == null, 
                 errorProvider
             );
@@ -22,7 +22,7 @@ namespace SmoothValidator.Extensions
             Func<TError> errorProvider
         ) where TObject : class
         {
-            return builder.Validate(
+            return builder.True(
                 value => value != null, 
                 errorProvider
             );

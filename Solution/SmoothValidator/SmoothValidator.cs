@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace SmoothValidator
 {
-    public class SmoothValidator<TObject, TError>
+    public class SmoothValidator<TObject, TError> : ISmoothValidator<TObject, TError>
     {
         public static SmoothValidatorBuilder<TObject, TError> Builder()
         {
