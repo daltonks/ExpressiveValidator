@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SmoothValidator
 {
@@ -34,7 +35,9 @@ namespace SmoothValidator
             Action<SmoothValidatorBuilder<TValue, TError>> action
         )
         {
-            var subBuilder = new SmoothValidatorBuilder<TValue, TError>(obj => valueProvider.Invoke((TObject)obj));
+            var subBuilder = new SmoothValidatorBuilder<TValue, TError>(
+                obj => valueProvider.Invoke(_getObjectFunc.Invoke(obj))
+            );
             action.Invoke(subBuilder);
             _validatorItems.AddRange(subBuilder._validatorItems);
             return this;
