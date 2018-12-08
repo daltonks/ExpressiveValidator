@@ -9,39 +9,7 @@ namespace ExpressiveValidator
         private readonly Func<object, bool> _validateFunc;
         private readonly Func<object> _errorProvider;
 
-        public static ExpressiveValidatorItem FromMember(
-            MemberInfo memberInfo, 
-            Func<object, bool> validateFunc,
-            Func<object> errorProvider)
-        {
-            Func<object, object> getValueFunc;
-
-            switch (memberInfo)
-            {
-                case FieldInfo fieldInfo:
-                    getValueFunc = obj => fieldInfo.GetValue(obj);
-                    break;
-                case MethodInfo methodInfo:
-                    getValueFunc = obj => methodInfo.Invoke(obj, new object[0]);
-                    break;
-                case PropertyInfo propertyInfo:
-                    getValueFunc = obj => propertyInfo.GetValue(obj);
-                    break;
-                default:
-                    throw new ArgumentException($"{memberInfo} is not a property, field, or method!");
-            }
-
-            return new ExpressiveValidatorItem(getValueFunc, validateFunc, errorProvider);
-        }
-
-        public static ExpressiveValidatorItem FromInstance(
-            Func<object, bool> validateFunc,
-            Func<object> errorProvider)
-        {
-            return new ExpressiveValidatorItem(o => o, validateFunc, errorProvider);
-        }
-
-        private ExpressiveValidatorItem(
+        internal ExpressiveValidatorItem(
             Func<object, object> getValueFunc, 
             Func<object, bool> validateFunc, 
             Func<object> errorProvider)

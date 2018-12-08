@@ -7,7 +7,7 @@ namespace ExpressiveValidator
     {
         public static ExpressiveValidatorBuilder<TObject, TError> Builder()
         {
-            return new ExpressiveValidatorBuilder<TObject, TError>();
+            return new ExpressiveValidatorBuilder<TObject, TError>(obj => (TObject) obj);
         }
 
         private readonly ExpressiveValidatorItem[] _validatorItems;
