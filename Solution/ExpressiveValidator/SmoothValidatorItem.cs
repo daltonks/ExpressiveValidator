@@ -3,13 +3,13 @@ using System.Reflection;
 
 namespace ExpressiveValidator
 {
-    internal class ExpressiveValidatorItem
+    internal class SmoothValidatorItem
     {
         private readonly Func<object, object> _getValueFunc;
         private readonly Func<object, bool> _validateFunc;
         private readonly Func<object> _errorProvider;
 
-        internal ExpressiveValidatorItem(
+        internal SmoothValidatorItem(
             Func<object, object> getValueFunc, 
             Func<object, bool> validateFunc, 
             Func<object> errorProvider)

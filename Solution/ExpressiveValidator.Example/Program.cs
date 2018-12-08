@@ -9,7 +9,7 @@ namespace ExpressiveValidator.Example
         {
             var createUserRequest = new CreateUserRequest
             {
-                Email = "aaa",
+                Email = "aaaa",
                 FirstName = "Dalton"
             };
 
@@ -26,22 +26,22 @@ namespace ExpressiveValidator.Example
 
     public class CreateUserRequest
     {
-        private static readonly ExpressiveValidator<CreateUserRequest, string> Validator =
-            ExpressiveValidator<CreateUserRequest, string>
+        private static readonly SmoothValidator<CreateUserRequest, string> Validator =
+            SmoothValidator<CreateUserRequest, string>
                 .Builder()
-                .ValidateChild(
+                .SubValidate(
                     request => request.Email,
                     builder => builder
-                        .MaxLength(254, maxLength => $"Email cannot exceed {maxLength} characters.")
+                        .Length(5, 254, range => $"Email must be between {range} characters.")
                         .Validate(value => value?.Contains("@") ?? false, () => "Email is invalid.")
                 )
-                .ValidateChild(
+                .SubValidate(
                     request => request.FirstName,
-                    builder => builder.IsNotNullOrWhitespace(() => "First name cannot be empty.")
+                    builder => builder.NotNullOrWhitespace(() => "First name cannot be empty.")
                 )
-                .ValidateChild(
+                .SubValidate(
                     request => request.LastName,
-                    builder => builder.IsNotNullOrWhitespace(() => "Last name cannot be empty.")
+                    builder => builder.NotNullOrWhitespace(() => "Last name cannot be empty.")
                 )
                 .Build();
 

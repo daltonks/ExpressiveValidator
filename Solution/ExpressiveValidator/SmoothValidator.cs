@@ -3,16 +3,16 @@ using System.Linq;
 
 namespace ExpressiveValidator
 {
-    public class ExpressiveValidator<TObject, TError>
+    public class SmoothValidator<TObject, TError>
     {
-        public static ExpressiveValidatorBuilder<TObject, TError> Builder()
+        public static SmoothValidatorBuilder<TObject, TError> Builder()
         {
-            return new ExpressiveValidatorBuilder<TObject, TError>(obj => (TObject) obj);
+            return new SmoothValidatorBuilder<TObject, TError>(obj => (TObject) obj);
         }
 
-        private readonly ExpressiveValidatorItem[] _validatorItems;
+        private readonly SmoothValidatorItem[] _validatorItems;
 
-        internal ExpressiveValidator(IEnumerable<ExpressiveValidatorItem> validators)
+        internal SmoothValidator(IEnumerable<SmoothValidatorItem> validators)
         {
             _validatorItems = validators.ToArray();
         }
