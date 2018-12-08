@@ -1,4 +1,4 @@
-﻿namespace ExpressiveValidator
+﻿namespace SmoothValidator.Util
 {
     public struct LengthRange
     {

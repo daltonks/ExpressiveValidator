@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ExpressiveValidator
+namespace SmoothValidator
 {
     public class SmoothValidatorBuilder<TObject, TError>
     {
@@ -14,12 +14,12 @@ namespace ExpressiveValidator
         }
 
         public SmoothValidatorBuilder<TObject, TError> Validate(
-            Func<TObject, bool> errorPredicate,
+            Func<TObject, bool> predicate,
             Func<TError> errorProvider)
         {
             var validatorItem = new SmoothValidatorItem(
                 obj => _getObjectFunc.Invoke(obj),
-                value => errorPredicate.Invoke((TObject) value), 
+                value => predicate.Invoke((TObject) value), 
                 () => errorProvider.Invoke()
             );
 

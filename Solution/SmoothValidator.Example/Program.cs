@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using SmoothValidator.Extensions;
 
-namespace ExpressiveValidator.Example
+namespace SmoothValidator.Example
 {
     public class Program
     {

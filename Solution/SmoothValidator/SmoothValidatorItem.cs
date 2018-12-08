@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Reflection;
 
-namespace ExpressiveValidator
+namespace SmoothValidator
 {
     internal class SmoothValidatorItem
     {
