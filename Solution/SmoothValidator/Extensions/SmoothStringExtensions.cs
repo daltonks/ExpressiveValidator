@@ -12,23 +12,12 @@ namespace SmoothValidator.Extensions
         )
         {
             return builder.Validate(
-                str => !String.IsNullOrWhiteSpace(str), 
+                str => !string.IsNullOrWhiteSpace(str), 
                 errorProvider
             );
         }
 
         // Length
-        public static SmoothValidatorBuilder<string, TError> Length<TError>(
-            this SmoothValidatorBuilder<string, TError> builder,
-            int min,
-            int max,
-            Func<LengthRange, TError> errorProvider
-        )
-        {
-            return builder.Length(() => new LengthRange(min, max), errorProvider);
-        }
-
-        // Length with provider
         public static SmoothValidatorBuilder<string, TError> Length<TError>(
             this SmoothValidatorBuilder<string, TError> builder,
             Func<LengthRange> lengthRangeProvider,
@@ -43,16 +32,6 @@ namespace SmoothValidator.Extensions
         // MinLength
         public static SmoothValidatorBuilder<string, TError> MinLength<TError>(
             this SmoothValidatorBuilder<string, TError> builder,
-            int length,
-            Func<int, TError> errorProvider
-        )
-        {
-            return builder.MinLength(() => length, errorProvider);
-        }
-
-        // MinLength with provider
-        public static SmoothValidatorBuilder<string, TError> MinLength<TError>(
-            this SmoothValidatorBuilder<string, TError> builder,
             Func<int> lengthProvider,
             Func<int, TError> errorProvider
         )
@@ -64,16 +43,6 @@ namespace SmoothValidator.Extensions
         }
 
         // MaxLength
-        public static SmoothValidatorBuilder<string, TError> MaxLength<TError>(
-            this SmoothValidatorBuilder<string, TError> builder,
-            int length,
-            Func<int, TError> errorProvider
-        )
-        {
-            return builder.MaxLength(() => length, errorProvider);
-        }
-
-        // MaxLength with provider
         public static SmoothValidatorBuilder<string, TError> MaxLength<TError>(
             this SmoothValidatorBuilder<string, TError> builder,
             Func<int> lengthProvider,

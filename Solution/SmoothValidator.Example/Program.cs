@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using SmoothValidator.Extensions;
+using SmoothValidator.Util;
 
 namespace SmoothValidator.Example
 {
@@ -33,7 +34,7 @@ namespace SmoothValidator.Example
                 .SubValidate(
                     request => request.Email,
                     builder => builder
-                        .Length(5, 254, range => $"Email must be between {range} characters.")
+                        .Length(() => new LengthRange(5, 254), range => $"Email must be between {range} characters.")
                         .Validate(value => value?.Contains("@") ?? false, () => "Email is invalid.")
                 )
                 .SubValidate(
