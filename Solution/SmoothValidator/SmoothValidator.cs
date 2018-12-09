@@ -30,13 +30,13 @@ namespace SmoothValidator
 
             foreach (var validator in _validatorItems)
             {
-                if (!validator.Validate(obj, out var error))
+                if (!validator.Validate(obj, out var itemErrors))
                 {
-                    errors.Add((TError) error);
+                    errors.AddRange(itemErrors.Cast<TError>());
                 }
             }
 
-            return errors.Any();
+            return !errors.Any();
         }
     }
 }

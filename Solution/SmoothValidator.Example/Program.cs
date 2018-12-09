@@ -28,7 +28,7 @@ namespace SmoothValidator.Example
 
     public class CreateUserRequest
     {
-        private static readonly ISmoothValidator<CreateUserRequest, string> Validator =
+        public static readonly SmoothValidator<CreateUserRequest, string> Validator = 
             SmoothValidator<CreateUserRequest, string>
                 .Builder()
                 .SubValidate(
@@ -45,12 +45,32 @@ namespace SmoothValidator.Example
                     request => request.LastName,
                     builder => builder.NotNullOrWhitespace(() => "Last name cannot be empty.")
                 )
+                .SubValidate(
+                    request => request.SubStuff,
+                    () => SubStuffy.Validator
+                )
                 .Build();
 
         public string Email { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public SubStuffy SubStuff { get; set; } = new SubStuffy();
 
         public bool Validate(out List<string> errors) => Validator.Validate(this, out errors);
+
+        public class SubStuffy
+        {
+            public static readonly SmoothValidator<SubStuffy, string> Validator =
+                SmoothValidator<SubStuffy, string>
+                    .Builder()
+                    .NotNull(() => "Substuff cannot be null")
+                    .SubValidate(
+                        subStuff => subStuff.Thingy,
+                        thingyBuilder => thingyBuilder.True(value => value, () => "All substuff thingies must be true.")
+                    )
+                    .Build();
+                    
+            public bool Thingy = false;
+        }
     }
 }

@@ -22,7 +22,7 @@ namespace SmoothValidator
             var validatorItem = new SmoothValidatorItem(
                 obj => _getObjectFunc.Invoke(obj),
                 value => predicate.Invoke((TObject) value), 
-                () => errorProvider.Invoke()
+                value => new List<object> { errorProvider.Invoke() }
             );
 
             _validatorItems.Add(validatorItem);
@@ -40,6 +40,26 @@ namespace SmoothValidator
             );
             action.Invoke(subBuilder);
             _validatorItems.AddRange(subBuilder._validatorItems);
+            return this;
+        }
+
+        public SmoothValidatorBuilder<TObject, TError> SubValidate<TValue>(
+            Func<TObject, TValue> valueProvider,
+            Func<ISmoothValidator<TValue, TError>> validatorProvider
+        )
+        {
+            var validatorItem = new SmoothValidatorItem(
+                obj => valueProvider.Invoke(_getObjectFunc.Invoke(obj)),
+                value => validatorProvider.Invoke().Validate((TValue) value),
+                value =>
+                {
+                    validatorProvider.Invoke().Validate((TValue) value, out var errors);
+                    return errors.Cast<object>().ToList();
+                }
+            );
+
+            _validatorItems.Add(validatorItem);
+
             return this;
         }
         
